@@ -4,6 +4,7 @@ import br.com.meli.dhprojetointegrador.entity.Buyer;
 import br.com.meli.dhprojetointegrador.entity.PurchaseOrder;
 import br.com.meli.dhprojetointegrador.enums.BuyerStatusEnum;
 import br.com.meli.dhprojetointegrador.enums.StatusEnum;
+import br.com.meli.dhprojetointegrador.exception.BuyerNotFoundException;
 import br.com.meli.dhprojetointegrador.repository.BuyerRepository;
 import br.com.meli.dhprojetointegrador.repository.PurchaseOrderRepository;
 import lombok.AllArgsConstructor;
@@ -31,7 +32,6 @@ public class BuyerService {
      * @Description: Listar todas as purchaseOrder referentes ao Buyer
      * @return
      */
-    //@Cacheable(value = "listAllPurchases", key = "#id")
     public List<PurchaseOrder> listAllPurchases(Long id) {
         List<PurchaseOrder> purchaseOrders = purchaseOrderRepository.findByBuyerIdAndStatus(id, StatusEnum.FINALIZADO);
         return purchaseOrders;
@@ -44,7 +44,6 @@ public class BuyerService {
      * @Description: Listar todas as purchaseOrder referentes ao Buyer com um mesmo Status
      * @return
      */
-    //@Cacheable(value = "listAllPurchasesWithStatus", key = "#id")
     public List<PurchaseOrder> listAllPurchasesWithStatus(Long id, StatusEnum status) {
         List<PurchaseOrder> purchaseOrdersStatus = purchaseOrderRepository.findByBuyerIdAndStatus(id, status);
         return purchaseOrdersStatus;
@@ -56,7 +55,6 @@ public class BuyerService {
      * @Description: Alterar os dados do buyer, pelo email/nome
      * @return
      */
-    //@CachePut(value = "updateDataBuyer", key = "#buyer")
     public Buyer updateDataBuyer(Long id, String name, String email) {
 
         try {
@@ -65,16 +63,16 @@ public class BuyerService {
 
             if(buyerId.getStatus().equals(BuyerStatusEnum.INATIVO)) {
 
-                throw new RuntimeException("Comprador Inativo!");
+                throw new BuyerNotFoundException("Comprador Inativo!");
 
             }else{
                 buyerId.setName(name);
                 buyerId.setEmail(email);
             }
             return buyerRepository.save(buyerId);
-        }catch (Exception e){
+        }catch (NoSuchElementException e){
 
-            throw new RuntimeException("Comprador inexistente!");
+            throw new BuyerNotFoundException("Comprador inexistente!");
         }
 
     }
@@ -85,14 +83,13 @@ public class BuyerService {
      * @Description: Desativar a conta a partir de email e password, setando Ativo e Inativo
      * @return
      */
-    //@CacheEvict(value = "deactivateBuyer", key = "#id")
     public Buyer deactivateBuyer(Long id) {
 
         try{
             Buyer buyerId = buyerRepository.findById(id).get();
             if(buyerId.getStatus().equals(BuyerStatusEnum.INATIVO)) {
 
-                throw new RuntimeException("Comprador já inativo!");
+                throw new BuyerNotFoundException("Comprador já inativo!");
 
             }else {
 
@@ -101,7 +98,7 @@ public class BuyerService {
             }
         }catch (NoSuchElementException e){
 
-            throw new RuntimeException("Comprador nao existe!");
+            throw new BuyerNotFoundException("Comprador nao existe!");
 
         }
 
