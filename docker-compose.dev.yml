@@ -86,7 +86,7 @@ services:
       - ./doc:/usr/share/nginx/html/doc
     environment:
       SWAGGER_JSON: /openapi.json
-      API_URL: doc/openapi.yaml
+
 
 networks:
   sonarnet:
