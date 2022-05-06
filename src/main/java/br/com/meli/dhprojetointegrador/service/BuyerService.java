@@ -65,7 +65,7 @@ public class BuyerService {
 
             if(buyerId.getStatus().equals(BuyerStatusEnum.INATIVO)) {
 
-                throw new RuntimeException("Comprador inexistente ou Inativo!");
+                throw new RuntimeException("Comprador Inativo!");
 
             }else{
                 buyerId.setName(name);
@@ -74,7 +74,7 @@ public class BuyerService {
             return buyerRepository.save(buyerId);
         }catch (Exception e){
 
-            throw new RuntimeException("Comprador inexistente ou Inativo!");
+            throw new RuntimeException("Comprador inexistente!");
         }
 
     }
